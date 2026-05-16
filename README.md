@@ -1,4 +1,4 @@
-# 🛡️ Project Sentinel — Autonomous Incident Resolution Engine
+# Project Sentinel — Autonomous Incident Resolution Engine
 
 > *"No more 3 AM wake-up calls. Sentinel detects failures, diagnoses root causes, and fixes production bugs — autonomously."*
 

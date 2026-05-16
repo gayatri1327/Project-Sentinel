@@ -47,9 +47,9 @@ The project demonstrates autonomous agentic AI workflows, multi-agent orchestrat
 │  │  │ /api/    │  │ /api/    │  │ /api/    │  │ /api/      │  │    │
 │  │  │ status   │  │ chaos    │  │ resolve  │  │ agent-log  │  │    │
 │  │  └────┬─────┘  └────┬─────┘  └────┬─────┘  └────┬───────┘  │    │
-│  └───────┼─────────────┼─────────────┼──────────────┼──────────┘    │
-│          │             │             │              │                │
-│          ▼             ▼             ▼              ▼                │
+│  └───────┼─────────────┼─────────────┼──────────────┼──────────┘   │
+│          │             │             │              │              │
+│          ▼             ▼             ▼              ▼              │
 │  ┌──────────────┐  ┌────────┐  ┌──────────────┐  ┌──────────────┐  │
 │  │ store.json   │  │ chaos- │  │ Fix Logic    │  │ agent-       │  │
 │  │ (flat-file   │  │ monkey │  │ (inline,     │  │ session.log  │  │

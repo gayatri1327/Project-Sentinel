@@ -1,0 +1,175 @@
+# =============================================================================
+# Sentinel CI — Continuous Integration
+# =============================================================================
+# Triggered on every push and pull request to `main`.
+#
+# Jobs:
+#   1. lint-types   — TypeScript type-check for the Next.js dashboard
+#   2. test         — Jest suite for each microservice (matrix)
+#   3. build        — Next.js production build (validates app compiles)
+#
+# Optional Vercel deploy is in deploy.yml (runs only after this workflow passes).
+# =============================================================================
+
+name: Sentinel CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-progress runs for the same branch/PR to save CI minutes
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  # ── Job 1: TypeScript type-check ─────────────────────────────────────────────
+  lint-types:
+    name: Type Check (Next.js Dashboard)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dashboard dependencies
+        run: npm ci
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+        # Continues even if tsc errors — lets the build job catch real failures
+        continue-on-error: true
+
+  # ── Job 2: Service test matrix ────────────────────────────────────────────────
+  test:
+    name: Test — ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false          # run all services even if one fails
+      matrix:
+        service: [auth-service, data-service, notify-service]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: services/${{ matrix.service }}/package-lock.json
+
+      - name: Install ${{ matrix.service }} dependencies
+        working-directory: services/${{ matrix.service }}
+        run: npm ci
+
+      - name: Run ${{ matrix.service }} test suite
+        working-directory: services/${{ matrix.service }}
+        run: npm test -- --forceExit --passWithNoTests
+        env:
+          NODE_ENV: test          # prevents app.listen() from binding ports
+
+      - name: Upload test results
+        if: always()              # upload even on failure for debugging
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.service }}
+          path: services/${{ matrix.service }}/coverage
+          if-no-files-found: ignore
+
+  # ── Job 3: Next.js production build ──────────────────────────────────────────
+  build:
+    name: Build (Next.js Dashboard)
+    runs-on: ubuntu-latest
+    needs: [lint-types, test]   # only build if types + tests pass
+    defaults:
+      run:
+        working-directory: app
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dashboard dependencies
+        run: npm ci
+
+      - name: Build Next.js app
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextjs-build
+          path: app/.next
+          retention-days: 3
+
+  # ── Job 4: Sentinel script smoke-test ────────────────────────────────────────
+  sentinel-scripts:
+    name: Sentinel Scripts (Node.js smoke-test)
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Smoke-test restore-service.js (dry run)
+        run: node scripts/restore-service.js --reset-store
+        # Verifies JSON store resets cleanly without crashing
+
+      - name: Smoke-test sentinel-resolve.js (no CRITICAL services)
+        run: node scripts/sentinel-resolve.js
+        # Should print "No CRITICAL services found" and exit 0
+
+  # ─── Optional Vercel deploy (uncomment + add secrets to enable) ──────────────
+  #
+  # deploy:
+  #   name: Deploy to Vercel (preview)
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   if: github.event_name == 'pull_request'
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Install Vercel CLI
+  #       run: npm install -g vercel@latest
+  #     - name: Deploy preview
+  #       working-directory: app
+  #       run: vercel deploy --token ${{ secrets.VERCEL_TOKEN }} --yes
+  #       env:
+  #         VERCEL_ORG_ID:     ${{ secrets.VERCEL_ORG_ID }}
+  #         VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

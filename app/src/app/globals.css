@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { @apply bg-navy-900; }
+  body { @apply bg-navy-900 text-slate-200 font-mono antialiased; }
+  * { @apply box-border; }
+  ::-webkit-scrollbar { @apply w-1; }
+  ::-webkit-scrollbar-track { @apply bg-navy-900; }
+  ::-webkit-scrollbar-thumb { @apply bg-navy-700 rounded-full; }
+}
+
+@layer components {
+  /* ── Status badge ── */
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-bold tracking-widest border;
+  }
+  .status-HEALTHY      { @apply text-cyan-400 bg-cyan-400/10 border-cyan-400/30; }
+  .status-CRITICAL     { @apply text-red-400  bg-red-400/10  border-red-400/30 animate-pulse-fast; }
+  .status-INVESTIGATING{ @apply text-yellow-400 bg-yellow-400/10 border-yellow-400/30; }
+  .status-DEGRADED     { @apply text-orange-400 bg-orange-400/10 border-orange-400/30; }
+
+  /* ── Agent badge ── */
+  .agent-Main  { @apply text-cyan-400 bg-cyan-400/10 border border-cyan-400/30 px-1.5 py-0.5 rounded text-[9px] font-bold tracking-widest; }
+  .agent-Alpha { @apply text-yellow-400 bg-yellow-400/10 border border-yellow-400/30 px-1.5 py-0.5 rounded text-[9px] font-bold tracking-widest; }
+  .agent-Beta  { @apply text-purple-400 bg-purple-400/10 border border-purple-400/30 px-1.5 py-0.5 rounded text-[9px] font-bold tracking-widest; }
+
+  /* ── Card ── */
+  .sentinel-card {
+    @apply rounded-2xl border border-white/[0.07] bg-white/[0.03] backdrop-blur-sm transition-all duration-200;
+  }
+  .sentinel-card:hover { @apply border-white/[0.12] bg-white/[0.05]; }
+
+  /* ── Service card ── */
+  .service-card {
+    @apply sentinel-card p-5 cursor-pointer select-none;
+  }
+  .service-card:hover { @apply -translate-y-1 shadow-card; }
+  .service-card.selected { @apply border-cyan-400/40 bg-cyan-400/[0.06] shadow-cyan-glow; }
+  .service-card.critical { @apply border-red-400/30 bg-red-400/[0.04] shadow-red-glow; }
+
+  /* ── Button ── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-xs font-bold tracking-wider
+           transition-all duration-150 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed border;
+  }
+  .btn-chaos   { @apply btn text-red-400 bg-red-400/10 border-red-400/30 hover:bg-red-400/20; }
+  .btn-resolve { @apply btn text-cyan-400 bg-cyan-400/10 border-cyan-400/30 hover:bg-cyan-400/20; }
+  .btn-ghost   { @apply btn text-slate-400 bg-white/[0.04] border-white/10 hover:bg-white/[0.08]; }
+
+  /* ── Section label ── */
+  .section-label {
+    @apply text-[9px] font-bold tracking-[0.25em] text-slate-500 uppercase;
+  }
+
+  /* ── Divider ── */
+  .sentinel-divider { @apply h-px bg-gradient-to-r from-white/10 to-transparent; }
+
+  /* ── Tab ── */
+  .tab { @apply px-4 py-2 text-xs font-bold tracking-widest transition-all duration-150 border-b-2 cursor-pointer; }
+  .tab-active   { @apply border-cyan-400 text-cyan-400; }
+  .tab-inactive { @apply border-transparent text-slate-500 hover:text-slate-300; }
+
+  /* ── Incident row ── */
+  .incident-row {
+    @apply flex items-start gap-3 p-4 rounded-xl border transition-all duration-150;
+  }
+  .incident-active   { @apply incident-row bg-red-400/[0.06] border-red-400/20 border-l-2 border-l-red-400; }
+  .incident-resolved { @apply incident-row bg-cyan-400/[0.04] border-cyan-400/15 border-l-2 border-l-cyan-400; }
+}
+
+@layer utilities {
+  .text-glow-cyan { text-shadow: 0 0 20px theme('colors.cyan.400'); }
+  .text-glow-red  { text-shadow: 0 0 20px theme('colors.red.400'); }
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(30,80,200,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30,80,200,.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "port": 3003,
+  "retryLimit": 3,
+  "timeoutMs": 5000
+}

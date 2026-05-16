@@ -1,0 +1,29 @@
+{
+  "name": "project-sentinel",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "app",
+    "services/*"
+  ],
+  "scripts": {
+    "dev": "cd app && npm run dev",
+    "build": "cd app && npm run build",
+    "chaos": "node scripts/chaos-monkey.js",
+    "chaos:auth": "node scripts/chaos-monkey.js auth-service",
+    "chaos:data": "node scripts/chaos-monkey.js data-service",
+    "chaos:notify": "node scripts/chaos-monkey.js notify-service",
+    "resolve": "node scripts/sentinel-resolve.js",
+    "resolve:auth": "node scripts/sentinel-resolve.js auth-service",
+    "resolve:data": "node scripts/sentinel-resolve.js data-service",
+    "resolve:notify": "node scripts/sentinel-resolve.js notify-service",
+    "restore": "node scripts/restore-service.js",
+    "restore:full": "node scripts/restore-service.js --full-reset",
+    "status": "node scripts/update-status.js",
+    "test:all": "npm run test --workspaces --if-present"
+  },
+  "devDependencies": {
+    "better-sqlite3": "^9.4.3",
+    "@types/better-sqlite3": "^7.6.10"
+  }
+}

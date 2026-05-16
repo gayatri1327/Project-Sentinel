@@ -1,0 +1,5 @@
+{
+  "port": 3001,
+  "jwtSecret": "sentinel-secret-dev",
+  "tokenExpirySeconds": 3600
+}

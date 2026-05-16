@@ -1,0 +1,59 @@
+{
+  "services": [
+    {
+      "id": 1,
+      "service": "auth-service",
+      "status": "HEALTHY",
+      "error_type": "NONE",
+      "last_updated": "2026-05-16T15:45:18.507Z",
+      "resolved_by": "Claude Sentinel"
+    },
+    {
+      "id": 2,
+      "service": "data-service",
+      "status": "HEALTHY",
+      "error_type": "NONE",
+      "last_updated": "2026-05-16T15:43:03.386Z",
+      "resolved_by": null
+    },
+    {
+      "id": 3,
+      "service": "notify-service",
+      "status": "HEALTHY",
+      "error_type": "NONE",
+      "last_updated": "2026-05-16T15:44:33.669Z",
+      "resolved_by": "Claude Sentinel"
+    }
+  ],
+  "incidents": [
+    {
+      "id": 1,
+      "service": "notify-service",
+      "status": "CRITICAL",
+      "error_type": "TYPE",
+      "timestamp": "2026-05-16T15:43:57.840Z",
+      "resolved_at": "2026-05-16T15:44:33.669Z",
+      "fix_description": "Removed stray }}// CHAOS marker from jest.config.js"
+    },
+    {
+      "id": 2,
+      "service": "notify-service",
+      "status": "CRITICAL",
+      "error_type": "SYNTAX",
+      "timestamp": "2026-05-16T15:43:59.919Z",
+      "resolved_at": "2026-05-16T15:44:33.669Z",
+      "fix_description": "Removed stray }}// CHAOS marker from jest.config.js"
+    },
+    {
+      "id": 3,
+      "service": "auth-service",
+      "status": "CRITICAL",
+      "error_type": "DEPENDENCY",
+      "timestamp": "2026-05-16T15:45:05.471Z",
+      "resolved_at": "2026-05-16T15:45:18.507Z",
+      "fix_description": "Restored express dependency in package.json"
+    }
+  ],
+  "nextServiceId": 4,
+  "nextIncidentId": 4
+}

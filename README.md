@@ -2,8 +2,6 @@
 
 > *"No more 3 AM wake-up calls. Sentinel detects failures, diagnoses root causes, and fixes production bugs — autonomously."*
 
-[![CI](https://github.com/gayatri1327/Project-Sentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/gayatri1327/Project-Sentinel/actions/workflows/ci.yml)
-[![Deploy](https://github.com/gayatri1327/Project-Sentinel/actions/workflows/deploy.yml/badge.svg)](https://github.com/gayatri1327/Project-Sentinel/actions/workflows/deploy.yml)
 
 ---
 
